@@ -1,10 +1,12 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
 import { items } from "./Data";
+import { useState } from "react";
 
 function Navbar({ setdata, cartItems, showFilter }) {
+  const [searchValue, setSearchValue] = useState("");
+  const navigate = useNavigate();
   const location = useLocation();
-  console.log(location);
 
   function filterByCategory(category) {
     const filteredData = items.filter((item) => item.category === category);
@@ -16,12 +18,10 @@ function Navbar({ setdata, cartItems, showFilter }) {
     setdata(filteredData);
   }
 
-  function searchProduct(e) {
-    const query = e.target.value;
-    const filteredProducts = items.filter((item) =>
-      item.title.toLowerCase().includes(query.toLowerCase())
-    );
-    setdata(filteredProducts);
+  function handleSubmit(e) {
+    e.preventDefault();
+    navigate(`/search/${searchValue}`);
+    setSearchValue("");
   }
 
   return (
@@ -32,12 +32,15 @@ function Navbar({ setdata, cartItems, showFilter }) {
             E-cart
           </Link>
           <div className="w-[60%] text-center">
-            <input
-              onChange={searchProduct}
-              className="w-[50%] font-semibold text-black border-none outline-none p-1"
-              type="text"
-              placeholder="Search Products"
-            />
+            <form onSubmit={handleSubmit}>
+              <input
+                onChange={(e) => setSearchValue(e.target.value)}
+                className="w-[50%] font-semibold text-black border-none outline-none p-1"
+                value={searchValue}
+                type="text"
+                placeholder="Search Products"
+              />
+            </form>
           </div>
           <Link to="/cart" className="w-[20%] text-center font-bold">
             <button
